@@ -1,1 +1,1297 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VINTAGE CAM - Classic Photo Booth</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Typewriter+&family=Courier+Prime:wght@400;700&family=Rock+Salt&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --vintage-brown: #6b4423;
+            --aged-beige: #f4e8d0;
+            --dark-wood: #3e2723;
+            --brass: #b8860b;
+            --sepia: #704214;
+            --cream: #faf0e6;
+            --aged-white: #f5f5dc;
+            --vintage-red: #8b4513;
+            --old-gray: #696969;
+        }
 
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier Prime', monospace;
+            background: linear-gradient(135deg, #d2b48c 0%, #bc9a6a 25%, #a0826d 50%, #8b7355 75%, #6b5d54 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                repeating-linear-gradient(90deg, 
+                    transparent, 
+                    transparent 2px, 
+                    rgba(139, 69, 19, 0.03) 2px, 
+                    rgba(139, 69, 19, 0.03) 4px),
+                repeating-linear-gradient(0deg, 
+                    transparent, 
+                    transparent 2px, 
+                    rgba(139, 69, 19, 0.03) 2px, 
+                    rgba(139, 69, 19, 0.03) 4px);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" opacity="0.03"><rect width="100" height="100" fill="none" stroke="%23000" stroke-width="0.5"/></svg>');
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .app-container {
+            position: relative;
+            z-index: 10;
+            padding: 20px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .camera-body {
+            background: linear-gradient(145deg, #8b6f47, #6b5637);
+            border-radius: 30px;
+            padding: 30px;
+            box-shadow: 
+                0 25px 80px rgba(0,0,0,0.4),
+                inset 0 2px 5px rgba(255,255,255,0.1),
+                inset 0 -2px 5px rgba(0,0,0,0.3);
+            position: relative;
+            overflow: hidden;
+            border: 3px solid var(--dark-wood);
+        }
+
+        .camera-body::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, var(--brass), var(--vintage-brown), var(--brass));
+            border-radius: 30px;
+            z-index: -1;
+            opacity: 0.6;
+        }
+
+        .brand-header {
+            text-align: center;
+            margin-bottom: 25px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .brand-name {
+            font-family: 'Rock Salt', cursive;
+            font-size: 2.8rem;
+            font-weight: 400;
+            color: var(--aged-white);
+            text-shadow: 
+                2px 2px 4px rgba(0,0,0,0.5),
+                0 0 20px rgba(184, 134, 11, 0.3);
+            letter-spacing: 2px;
+            transform: rotate(-1deg);
+            display: inline-block;
+            background: linear-gradient(135deg, var(--brass), var(--aged-white));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .brand-tagline {
+            font-family: 'Special Elite', cursive;
+            font-size: 0.8rem;
+            color: var(--aged-beige);
+            margin-top: 5px;
+            letter-spacing: 3px;
+            opacity: 0.8;
+        }
+
+        .viewfinder {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 1;
+            background: #1a1a1a;
+            border-radius: 15px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            box-shadow: 
+                inset 0 0 30px rgba(0,0,0,0.8),
+                0 15px 40px rgba(0,0,0,0.4);
+            border: 5px solid var(--dark-wood);
+        }
+
+        .viewfinder-lens {
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 20px;
+            background: linear-gradient(145deg, var(--brass), #8b6914);
+            border-radius: 10px;
+            z-index: 15;
+            box-shadow: 
+                0 5px 15px rgba(0,0,0,0.3),
+                inset 0 2px 5px rgba(255,255,255,0.3);
+        }
+
+        .viewfinder-lens::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 15px;
+            height: 15px;
+            background: radial-gradient(circle, #333, #000);
+            border-radius: 50%;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .corner-bracket {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            border: 2px solid var(--brass);
+            z-index: 11;
+            opacity: 0.8;
+        }
+
+        .corner-bracket.tl {
+            top: 40px;
+            left: 10px;
+            border-right: none;
+            border-bottom: none;
+        }
+
+        .corner-bracket.tr {
+            top: 40px;
+            right: 10px;
+            border-left: none;
+            border-bottom: none;
+        }
+
+        .corner-bracket.bl {
+            bottom: 10px;
+            left: 10px;
+            border-right: none;
+            border-top: none;
+        }
+
+        .corner-bracket.br {
+            bottom: 10px;
+            right: 10px;
+            border-left: none;
+            border-top: none;
+        }
+
+        #video, #canvas {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transform: scaleX(-1);
+            filter: sepia(20%) contrast(1.1);
+        }
+
+        #canvas {
+            display: none;
+        }
+
+        .vintage-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 5;
+            transform: scaleX(-1);
+            opacity: 0.3;
+            background: 
+                radial-gradient(circle at center, transparent 30%, rgba(139, 69, 19, 0.1) 100%),
+                repeating-linear-gradient(0deg, 
+                    transparent, 
+                    transparent 2px, 
+                    rgba(0,0,0,0.03) 2px, 
+                    rgba(0,0,0,0.03) 4px);
+        }
+
+        .frame-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 6;
+            transform: scaleX(-1);
+        }
+
+        .date-stamp {
+            position: absolute;
+            bottom: 15px;
+            right: 15px;
+            color: var(--aged-beige);
+            font-family: 'Special Elite', cursive;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+            z-index: 7;
+            transform: scaleX(-1);
+            background: rgba(0,0,0,0.3);
+            padding: 2px 8px;
+            border-radius: 3px;
+        }
+
+        .sticker-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 8;
+            transform: scaleX(-1);
+        }
+
+        .sticker {
+            position: absolute;
+            cursor: move;
+            pointer-events: auto;
+            font-size: 2rem;
+            filter: sepia(30%) drop-shadow(2px 2px 4px rgba(0,0,0,0.5));
+            user-select: none;
+            animation: vintageFloat 4s ease-in-out infinite;
+        }
+
+        @keyframes vintageFloat {
+            0%, 100% { transform: translateY(0px) rotate(-1deg); }
+            50% { transform: translateY(-3px) rotate(1deg); }
+        }
+
+        .control-panel {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .vintage-btn {
+            background: linear-gradient(145deg, var(--vintage-brown), var(--sepia));
+            border: 2px solid var(--dark-wood);
+            border-radius: 10px;
+            padding: 12px;
+            font-family: 'Special Elite', cursive;
+            font-weight: 700;
+            color: var(--aged-white);
+            box-shadow: 
+                4px 4px 8px rgba(0,0,0,0.4),
+                inset 1px 1px 2px rgba(255,255,255,0.1);
+            transition: all 0.2s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            font-size: 0.9rem;
+        }
+
+        .vintage-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .vintage-btn:hover::before {
+            left: 100%;
+        }
+
+        .vintage-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 
+                6px 6px 12px rgba(0,0,0,0.5),
+                inset 1px 1px 3px rgba(255,255,255,0.2);
+        }
+
+        .vintage-btn:active {
+            transform: translateY(0);
+            box-shadow: 
+                inset 2px 2px 4px rgba(0,0,0,0.4),
+                inset -1px -1px 2px rgba(255,255,255,0.1);
+        }
+
+        .capture-btn {
+            grid-column: span 3;
+            background: linear-gradient(145deg, var(--brass), #8b6914);
+            font-size: 1.3rem;
+            padding: 15px;
+            animation: vintagePulse 3s infinite;
+            border: 3px solid var(--dark-wood);
+        }
+
+        @keyframes vintagePulse {
+            0%, 100% { 
+                box-shadow: 
+                    0 0 20px rgba(184, 134, 11, 0.3),
+                    4px 4px 8px rgba(0,0,0,0.4);
+            }
+            50% { 
+                box-shadow: 
+                    0 0 30px rgba(184, 134, 11, 0.5),
+                    6px 6px 12px rgba(0,0,0,0.5);
+            }
+        }
+
+        .filter-strip {
+            background: linear-gradient(145deg, var(--aged-beige), #e8d4b0);
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 20px;
+            box-shadow: 
+                0 8px 25px rgba(0,0,0,0.3),
+                inset 0 2px 5px rgba(255,255,255,0.3);
+            position: relative;
+            z-index: 2;
+            border: 2px solid var(--vintage-brown);
+        }
+
+        .filter-title {
+            font-family: 'Rock Salt', cursive;
+            font-size: 1rem;
+            font-weight: 400;
+            color: var(--sepia);
+            margin-bottom: 15px;
+            text-align: center;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+        }
+
+        .filter-options {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+        }
+
+        .filter-chip {
+            padding: 8px 5px;
+            background: linear-gradient(145deg, var(--aged-white), #e0d5c1);
+            border: 2px solid var(--vintage-brown);
+            border-radius: 8px;
+            font-family: 'Special Elite', cursive;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--sepia);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            box-shadow: 
+                2px 2px 4px rgba(0,0,0,0.2),
+                inset 1px 1px 2px rgba(255,255,255,0.3);
+        }
+
+        .filter-chip:hover {
+            transform: translateY(-2px);
+            box-shadow: 
+                4px 4px 8px rgba(0,0,0,0.3),
+                inset 1px 1px 3px rgba(255,255,255,0.4);
+        }
+
+        .filter-chip.active {
+            background: linear-gradient(145deg, var(--vintage-brown), var(--sepia));
+            color: var(--aged-white);
+            border-color: var(--dark-wood);
+            box-shadow: 
+                inset 2px 2px 4px rgba(0,0,0,0.3),
+                inset -1px -1px 2px rgba(255,255,255,0.1);
+        }
+
+        .frame-selector {
+            background: linear-gradient(145deg, var(--aged-beige), #e8d4b0);
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 20px;
+            box-shadow: 
+                0 8px 25px rgba(0,0,0,0.3),
+                inset 0 2px 5px rgba(255,255,255,0.3);
+            position: relative;
+            z-index: 2;
+            border: 2px solid var(--vintage-brown);
+        }
+
+        .frame-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        .frame-option {
+            aspect-ratio: 1;
+            background: linear-gradient(145deg, var(--aged-white), #e0d5c1);
+            border: 2px solid var(--vintage-brown);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            box-shadow: 
+                2px 2px 4px rgba(0,0,0,0.2),
+                inset 1px 1px 2px rgba(255,255,255,0.3);
+            filter: sepia(20%);
+        }
+
+        .frame-option:hover {
+            transform: scale(1.05) rotate(2deg);
+            border-color: var(--brass);
+            box-shadow: 
+                4px 4px 8px rgba(0,0,0,0.3),
+                inset 1px 1px 3px rgba(255,255,255,0.4);
+        }
+
+        .frame-option.active {
+            background: linear-gradient(145deg, var(--vintage-brown), var(--sepia));
+            border-color: var(--dark-wood);
+            box-shadow: 
+                inset 2px 2px 4px rgba(0,0,0,0.3),
+                inset -1px -1px 2px rgba(255,255,255,0.1);
+        }
+
+        .sticker-panel {
+            background: linear-gradient(145deg, var(--aged-beige), #e8d4b0);
+            border-radius: 15px;
+            padding: 15px;
+            box-shadow: 
+                0 8px 25px rgba(0,0,0,0.3),
+                inset 0 2px 5px rgba(255,255,255,0.3);
+            position: relative;
+            z-index: 2;
+            border: 2px solid var(--vintage-brown);
+        }
+
+        .sticker-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 8px;
+        }
+
+        .sticker-btn {
+            aspect-ratio: 1;
+            background: linear-gradient(145deg, var(--aged-white), #e0d5c1);
+            border: 2px solid var(--vintage-brown);
+            border-radius: 8px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 
+                2px 2px 4px rgba(0,0,0,0.2),
+                inset 1px 1px 2px rgba(255,255,255,0.3);
+            filter: sepia(30%);
+        }
+
+        .sticker-btn:hover {
+            transform: scale(1.2) rotate(-5deg);
+            background: linear-gradient(145deg, var(--brass), #8b6914);
+            box-shadow: 
+                4px 4px 8px rgba(0,0,0,0.3),
+                inset 1px 1px 3px rgba(255,255,255,0.4);
+        }
+
+        .photo-album {
+            background: linear-gradient(145deg, var(--aged-beige), #e8d4b0);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+            box-shadow: 
+                0 10px 30px rgba(0,0,0,0.3),
+                inset 0 2px 5px rgba(255,255,255,0.3);
+            position: relative;
+            z-index: 2;
+            border: 2px solid var(--vintage-brown);
+        }
+
+        .album-title {
+            font-family: 'Rock Salt', cursive;
+            font-size: 1.2rem;
+            color: var(--sepia);
+            text-align: center;
+            margin-bottom: 15px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+        }
+
+        .album-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        .vintage-photo {
+            background: var(--aged-white);
+            padding: 8px 8px 25px 8px;
+            border-radius: 5px;
+            box-shadow: 
+                0 8px 20px rgba(0,0,0,0.3),
+                0 0 0 1px var(--vintage-brown);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            transform: rotate(-2deg);
+            filter: sepia(10%);
+        }
+
+        .vintage-photo:nth-child(even) {
+            transform: rotate(2deg);
+        }
+
+        .vintage-photo:hover {
+            transform: rotate(0deg) scale(1.05);
+            box-shadow: 
+                0 12px 30px rgba(0,0,0,0.4),
+                0 0 0 1px var(--brass);
+        }
+
+        .vintage-photo img {
+            width: 100%;
+            height: auto;
+            border-radius: 3px;
+            display: block;
+            filter: sepia(20%) contrast(1.1);
+        }
+
+        .photo-date {
+            position: absolute;
+            bottom: 8px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-family: 'Special Elite', cursive;
+            font-size: 0.65rem;
+            color: var(--sepia);
+        }
+
+        .countdown-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 6rem;
+            font-weight: 700;
+            color: var(--aged-white);
+            text-shadow: 
+                0 0 30px rgba(0,0,0,0.8),
+                0 0 60px rgba(0,0,0,0.5);
+            z-index: 20;
+            display: none;
+            font-family: 'Special Elite', cursive;
+            animation: vintageCountdown 1s ease-in-out;
+        }
+
+        @keyframes vintageCountdown {
+            0% { 
+                transform: translate(-50%, -50%) scale(0) rotate(-10deg); 
+                opacity: 0; 
+            }
+            50% { 
+                transform: translate(-50%, -50%) scale(1.2) rotate(5deg); 
+                opacity: 1; 
+            }
+            100% { 
+                transform: translate(-50%, -50%) scale(1) rotate(0deg); 
+                opacity: 0.8; 
+            }
+        }
+
+        .flash-effect {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(255,248,220,0.9) 0%, rgba(255,248,220,0) 70%);
+            z-index: 15;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .flash-active {
+            animation: vintageFlash 0.6s ease-out;
+        }
+
+        @keyframes vintageFlash {
+            0% { opacity: 0; }
+            50% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+
+        .vintage-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: linear-gradient(145deg, var(--aged-beige), #e8d4b0);
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 
+                0 20px 60px rgba(0,0,0,0.5),
+                inset 0 2px 5px rgba(255,255,255,0.3);
+            border: 3px solid var(--vintage-brown);
+        }
+
+        .modal-title {
+            font-family: 'Rock Salt', cursive;
+            font-size: 1.5rem;
+            color: var(--sepia);
+            margin-bottom: 20px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 480px) {
+            .app-container {
+                padding: 10px;
+            }
+            
+            .camera-body {
+                padding: 20px;
+            }
+            
+            .brand-name {
+                font-size: 2.2rem;
+            }
+            
+            .filter-options {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .frame-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .sticker-grid {
+                grid-template-columns: repeat(5, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <div class="camera-body">
+            <div class="brand-header">
+                <h1 class="brand-name">VINTAGE CAM</h1>
+                <p class="brand-tagline">EST. 1978</p>
+            </div>
+
+            <div class="viewfinder">
+                <div class="viewfinder-lens"></div>
+                <div class="corner-bracket tl"></div>
+                <div class="corner-bracket tr"></div>
+                <div class="corner-bracket bl"></div>
+                <div class="corner-bracket br"></div>
+                
+                <video id="video" autoplay playsinline></video>
+                <canvas id="canvas"></canvas>
+                
+                <div class="vintage-overlay"></div>
+                <div class="frame-overlay" id="frameOverlay"></div>
+                <div class="date-stamp" id="dateStamp"></div>
+                <div class="sticker-layer" id="stickerLayer"></div>
+                
+                <div class="countdown-overlay" id="countdown"></div>
+                <div class="flash-effect" id="flashEffect"></div>
+            </div>
+
+            <div class="control-panel">
+                <button class="vintage-btn" onclick="switchCamera()">
+                    <i class="bi bi-arrow-repeat"></i> FLIP
+                </button>
+                <button class="vintage-btn" onclick="openAlbum()">
+                    <i class="bi bi-images"></i> ALBUM
+                </button>
+                <button class="vintage-btn" onclick="resetAll()">
+                    <i class="bi bi-arrow-clockwise"></i> RESET
+                </button>
+                <button class="vintage-btn capture-btn" onclick="startCountdown()">
+                    <i class="bi bi-camera-fill"></i> CAPTURE
+                </button>
+            </div>
+
+            <div class="filter-strip">
+                <div class="filter-title">📷 FILM TYPE</div>
+                <div class="filter-options">
+                    <div class="filter-chip active" onclick="applyFilter('classic')">CLASSIC</div>
+                    <div class="filter-chip" onclick="applyFilter('sepia')">SEPIA</div>
+                    <div class="filter-chip" onclick="applyFilter('bw')">B&W</div>
+                    <div class="filter-chip" onclick="applyFilter('aged')">AGED</div>
+                    <div class="filter-chip" onclick="applyFilter('warm')">WARM</div>
+                    <div class="filter-chip" onclick="applyFilter('cold')">COLD</div>
+                    <div class="filter-chip" onclick="applyFilter('drama')">DRAMA</div>
+                    <div class="filter-chip" onclick="applyFilter('dream')">DREAM</div>
+                </div>
+            </div>
+
+            <div class="frame-selector">
+                <div class="filter-title">🖼️ FRAME STYLE</div>
+                <div class="frame-grid">
+                    <div class="frame-option active" onclick="selectFrame('none')">📸</div>
+                    <div class="frame-option" onclick="selectFrame('polaroid')">📷</div>
+                    <div class="frame-option" onclick="selectFrame('vintage')">📼</div>
+                    <div class="frame-option" onclick="selectFrame('film')">🎞️</div>
+                    <div class="frame-option" onclick="selectFrame('square')">⬜</div>
+                    <div class="frame-option" onclick="selectFrame('border')">🖼️</div>
+                    <div class="frame-option" onclick="selectFrame('corner')">📐</div>
+                    <div class="frame-option" onclick="selectFrame('grain')">🌾</div>
+                </div>
+            </div>
+
+            <div class="sticker-panel">
+                <div class="filter-title">✨ VINTAGE STICKERS</div>
+                <div class="sticker-grid">
+                    <span class="sticker-btn" onclick="addSticker('📷')">📷</span>
+                    <span class="sticker-btn" onclick="addSticker('🎞️')">🎞️</span>
+                    <span class="sticker-btn" onclick="addSticker('📼')">📼</span>
+                    <span class="sticker-btn" onclick="addSticker('🌹')">🌹</span>
+                    <span class="sticker-btn" onclick="addSticker('🕰️')">🕰️</span>
+                    <span class="sticker-btn" onclick="addSticker('📜')">📜</span>
+                    <span class="sticker-btn" onclick="addSticker('🎩')">🎩</span>
+                    <span class="sticker-btn" onclick="addSticker('🕶️')">🕶️</span>
+                    <span class="sticker-btn" onclick="addSticker('📻')">📻</span>
+                    <span class="sticker-btn" onclick="addSticker('🎸')">🎸</span>
+                    <span class="sticker-btn" onclick="addSticker('📓')">📓</span>
+                    <span class="sticker-btn" onclick="addSticker('💌')">💌</span>
+                </div>
+            </div>
+
+            <div class="photo-album">
+                <div class="album-title">📸 VINTAGE ALBUM</div>
+                <div class="album-grid" id="albumGrid">
+                    <!-- Vintage photos will be added here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="vintage-modal" id="albumModal">
+        <div class="modal-content">
+            <h2 class="modal-title">📷 Photo Album</h2>
+            <p style="color: var(--sepia); margin-bottom: 20px; font-family: 'Special Elite', cursive;">Choose an action</p>
+            <div class="modal-buttons">
+                <button class="vintage-btn" onclick="downloadAll()">
+                    <i class="bi bi-download"></i> SAVE ALL
+                </button>
+                <button class="vintage-btn" onclick="clearAlbum()">
+                    <i class="bi bi-trash"></i> CLEAR
+                </button>
+                <button class="vintage-btn" onclick="closeAlbum()">
+                    <i class="bi bi-x-lg"></i> CLOSE
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let video = document.getElementById('video');
+        let canvas = document.getElementById('canvas');
+        let context = canvas.getContext('2d');
+        let currentFrame = 'none';
+        let currentFilter = 'classic';
+        let currentCamera = 'user';
+        let stream = null;
+        let capturedPhotos = [];
+        let photoCounter = 1;
+
+        // Initialize camera
+        async function initCamera() {
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { 
+                        facingMode: currentCamera,
+                        width: { ideal: 1280 },
+                        height: { ideal: 1280 }
+                    },
+                    audio: false 
+                });
+                video.srcObject = stream;
+                
+                video.onloadedmetadata = () => {
+                    canvas.width = video.videoWidth;
+                    canvas.height = video.videoHeight;
+                    updateDateStamp();
+                };
+            } catch (err) {
+                console.error('Error accessing camera:', err);
+            }
+        }
+
+        // Update date stamp
+        function updateDateStamp() {
+            const dateStamp = document.getElementById('dateStamp');
+            const now = new Date();
+            const dateStr = now.toLocaleDateString('en-US', { 
+                month: 'short', 
+                day: 'numeric', 
+                year: 'numeric' 
+            });
+            const timeStr = now.toLocaleTimeString('en-US', { 
+                hour: '2-digit', 
+                minute: '2-digit' 
+            });
+            dateStamp.textContent = `${dateStr} ${timeStr}`;
+        }
+
+        // Switch camera
+        async function switchCamera() {
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+            }
+            currentCamera = currentCamera === 'user' ? 'environment' : 'user';
+            await initCamera();
+        }
+
+        // Select frame
+        function selectFrame(frame) {
+            currentFrame = frame;
+            document.querySelectorAll('.frame-option').forEach(option => {
+                option.classList.remove('active');
+            });
+            event.target.closest('.frame-option').classList.add('active');
+            
+            const frameOverlay = document.getElementById('frameOverlay');
+            if (frame === 'none') {
+                frameOverlay.innerHTML = '';
+            } else if (frame === 'polaroid') {
+                frameOverlay.style.background = 'linear-gradient(to bottom, transparent 80%, var(--aged-white) 80%, var(--aged-white) 100%)';
+            } else if (frame === 'vintage') {
+                frameOverlay.style.background = 'linear-gradient(to bottom, transparent 85%, var(--vintage-brown) 85%, var(--vintage-brown) 100%)';
+            } else if (frame === 'film') {
+                frameOverlay.style.background = 'linear-gradient(to bottom, transparent 88%, #2c3e50 88%, #2c3e50 100%)';
+            } else if (frame === 'square') {
+                frameOverlay.style.background = 'transparent';
+                frameOverlay.style.border = '15px solid var(--aged-white)';
+            } else if (frame === 'border') {
+                frameOverlay.style.background = 'transparent';
+                frameOverlay.style.border = '10px solid var(--vintage-brown)';
+            } else if (frame === 'corner') {
+                frameOverlay.style.background = 'transparent';
+                frameOverlay.innerHTML = `
+                    <div style="position: absolute; top: 20px; left: 20px; width: 50px; height: 50px; border: 3px solid var(--brass); border-right: none; border-bottom: none;"></div>
+                    <div style="position: absolute; top: 20px; right: 20px; width: 50px; height: 50px; border: 3px solid var(--brass); border-left: none; border-bottom: none;"></div>
+                    <div style="position: absolute; bottom: 20px; left: 20px; width: 50px; height: 50px; border: 3px solid var(--brass); border-right: none; border-top: none;"></div>
+                    <div style="position: absolute; bottom: 20px; right: 20px; width: 50px; height: 50px; border: 3px solid var(--brass); border-left: none; border-top: none;"></div>
+                `;
+            } else if (frame === 'grain') {
+                frameOverlay.style.background = 'url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJub2lzZSI+PGZlVHVyYnVsZW5jZSB0eXBlPSJmcmFjdGFsTm9pc2UiIGJhc2VGcmVxdWVuY3k9IjAuNjUiIG51bU9jdGF2ZXM9IjMiLz48ZmVDb2xvck1hdHJpeCB2YWx1ZXM9IjAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMSAwIi8+PC9maWx0ZXI+PHJlY3Qgd2lkdGg9IjMwMCIgaGVpZ2h0PSIzMDAiIGZpbHRlcj0idXJsKCNub2lzZSkiIG9wYWNpdHk9IjAuMDUiLz48L3N2Zz4=)';
+            }
+        }
+
+        // Apply filter
+        function applyFilter(filter) {
+            currentFilter = filter;
+            document.querySelectorAll('.filter-chip').forEach(chip => {
+                chip.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            const filterMap = {
+                'classic': 'sepia(20%) contrast(1.1) brightness(0.95)',
+                'sepia': 'sepia(80%) contrast(1.2) brightness(0.9)',
+                'bw': 'grayscale(100%) contrast(1.3) brightness(0.9)',
+                'aged': 'sepia(60%) contrast(1.1) brightness(0.85) saturate(0.8)',
+                'warm': 'sepia(30%) hue-rotate(-10deg) saturate(1.2) brightness(1.05)',
+                'cold': 'sepia(20%) hue-rotate(180deg) saturate(0.7) brightness(1.1)',
+                'drama': 'contrast(1.4) brightness(0.85) saturate(1.3)',
+                'dream': 'sepia(40%) blur(0.5px) brightness(1.1) saturate(1.2)'
+            };
+            
+            video.style.filter = filterMap[filter];
+        }
+
+        // Add sticker
+        function addSticker(emoji) {
+            const stickerLayer = document.getElementById('stickerLayer');
+            const sticker = document.createElement('div');
+            sticker.className = 'sticker';
+            sticker.innerHTML = emoji;
+            sticker.style.left = Math.random() * 70 + '%';
+            sticker.style.top = Math.random() * 70 + '%';
+            sticker.draggable = true;
+            
+            // Make sticker draggable
+            let isDragging = false;
+            let currentX;
+            let currentY;
+            let initialX;
+            let initialY;
+            let xOffset = 0;
+            let yOffset = 0;
+
+            sticker.addEventListener('mousedown', dragStart);
+            sticker.addEventListener('mouseup', dragEnd);
+            sticker.addEventListener('mousemove', drag);
+            sticker.addEventListener('dblclick', () => {
+                sticker.remove();
+            });
+
+            function dragStart(e) {
+                initialX = e.clientX - xOffset;
+                initialY = e.clientY - yOffset;
+                if (e.target === sticker) {
+                    isDragging = true;
+                }
+            }
+
+            function dragEnd(e) {
+                initialX = currentX;
+                initialY = currentY;
+                isDragging = false;
+            }
+
+            function drag(e) {
+                if (isDragging) {
+                    e.preventDefault();
+                    currentX = e.clientX - initialX;
+                    currentY = e.clientY - initialY;
+                    xOffset = currentX;
+                    yOffset = currentY;
+                    sticker.style.transform = `translate(${currentX}px, ${currentY}px)`;
+                }
+            }
+            
+            stickerLayer.appendChild(sticker);
+        }
+
+        // Countdown before capture
+        function startCountdown() {
+            const countdown = document.getElementById('countdown');
+            let count = 3;
+            countdown.style.display = 'block';
+            countdown.textContent = count;
+            
+            const countInterval = setInterval(() => {
+                count--;
+                if (count > 0) {
+                    countdown.textContent = count;
+                    countdown.style.animation = 'none';
+                    setTimeout(() => {
+                        countdown.style.animation = 'vintageCountdown 1s ease-in-out';
+                    }, 10);
+                } else {
+                    clearInterval(countInterval);
+                    countdown.style.display = 'none';
+                    capturePhoto();
+                }
+            }, 1000);
+        }
+
+        // Capture photo
+        function capturePhoto() {
+            // Flash effect
+            const flash = document.getElementById('flashEffect');
+            flash.classList.add('flash-active');
+            setTimeout(() => {
+                flash.classList.remove('flash-active');
+            }, 600);
+            
+            // Save current context state
+            context.save();
+            
+            // Flip context horizontally to remove mirror effect
+            context.scale(-1, 1);
+            
+            // Apply filter
+            context.filter = video.style.filter || 'none';
+            
+            // Draw video to canvas (flipped)
+            context.drawImage(video, -canvas.width, 0, canvas.width, canvas.height);
+            
+            // Add vintage grain effect
+            if (currentFilter !== 'bw') {
+                const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+                const data = imageData.data;
+                
+                for (let i = 0; i < data.length; i += 4) {
+                    const noise = Math.random() * 20 - 10;
+                    data[i] += noise;     // Red
+                    data[i + 1] += noise; // Green
+                    data[i + 2] += noise; // Blue
+                }
+                
+                context.putImageData(imageData, 0, 0);
+            }
+            
+            // Restore context state
+            context.restore();
+            
+            // Draw stickers (flipped)
+            const stickers = document.querySelectorAll('.sticker');
+            stickers.forEach(sticker => {
+                const rect = sticker.getBoundingClientRect();
+                const containerRect = document.getElementById('stickerLayer').getBoundingClientRect();
+                const x = rect.left - containerRect.left;
+                const y = rect.top - containerRect.top;
+                
+                context.save();
+                context.scale(-1, 1);
+                context.font = '35px Arial';
+                context.fillText(sticker.innerHTML, -canvas.width + x, y + 35);
+                context.restore();
+            });
+            
+            // Draw date stamp
+            const dateStamp = document.getElementById('dateStamp').textContent;
+            context.save();
+            context.font = 'bold 14px Special Elite';
+            context.fillStyle = '#6b4423';
+            context.shadowColor = 'rgba(0,0,0,0.5)';
+            context.shadowBlur = 2;
+            context.fillText(dateStamp, canvas.width - 120, canvas.height - 15);
+            context.restore();
+            
+            // Apply frame overlay if selected
+            if (currentFrame !== 'none') {
+                applyFrameToCanvas();
+            }
+            
+            saveToAlbum();
+        }
+
+        // Apply frame to canvas
+        function applyFrameToCanvas() {
+            context.save();
+            
+            if (currentFrame === 'polaroid') {
+                context.fillStyle = '#faf0e6';
+                context.fillRect(0, canvas.height * 0.8, canvas.width, canvas.height * 0.2);
+            } else if (currentFrame === 'vintage') {
+                context.fillStyle = '#6b4423';
+                context.fillRect(0, canvas.height * 0.85, canvas.width, canvas.height * 0.15);
+            } else if (currentFrame === 'film') {
+                context.fillStyle = '#2c3e50';
+                context.fillRect(0, canvas.height * 0.88, canvas.width, canvas.height * 0.12);
+            } else if (currentFrame === 'square') {
+                context.strokeStyle = '#faf0e6';
+                context.lineWidth = 15;
+                context.strokeRect(15, 15, canvas.width - 30, canvas.height - 30);
+            } else if (currentFrame === 'border') {
+                context.strokeStyle = '#6b4423';
+                context.lineWidth = 10;
+                context.strokeRect(10, 10, canvas.width - 20, canvas.height - 20);
+            } else if (currentFrame === 'corner') {
+                context.strokeStyle = '#b8860b';
+                context.lineWidth = 3;
+                // Top-left corner
+                context.beginPath();
+                context.moveTo(20, 60);
+                context.lineTo(20, 20);
+                context.lineTo(60, 20);
+                context.stroke();
+                // Top-right corner
+                context.beginPath();
+                context.moveTo(canvas.width - 60, 20);
+                context.lineTo(canvas.width - 20, 20);
+                context.lineTo(canvas.width - 20, 60);
+                context.stroke();
+                // Bottom-left corner
+                context.beginPath();
+                context.moveTo(20, canvas.height - 60);
+                context.lineTo(20, canvas.height - 20);
+                context.lineTo(60, canvas.height - 20);
+                context.stroke();
+                // Bottom-right corner
+                context.beginPath();
+                context.moveTo(canvas.width - 60, canvas.height - 20);
+                context.lineTo(canvas.width - 20, canvas.height - 20);
+                context.lineTo(canvas.width - 20, canvas.height - 60);
+                context.stroke();
+            }
+            
+            context.restore();
+        }
+
+        // Save to album
+        function saveToAlbum() {
+            const photoData = canvas.toDataURL('image/png', 0.9);
+            const photoInfo = {
+                data: photoData,
+                timestamp: new Date().toISOString(),
+                id: photoCounter++
+            };
+            capturedPhotos.push(photoInfo);
+            updateAlbum();
+        }
+
+        // Update album display
+        function updateAlbum() {
+            const albumGrid = document.getElementById('albumGrid');
+            
+            if (capturedPhotos.length === 0) {
+                albumGrid.innerHTML = '';
+                return;
+            }
+            
+            // Show only last 6 photos
+            const recentPhotos = capturedPhotos.slice(-6);
+            albumGrid.innerHTML = '';
+            
+            recentPhotos.forEach((photo, index) => {
+                const vintagePhoto = document.createElement('div');
+                vintagePhoto.className = 'vintage-photo';
+                
+                const date = new Date(photo.timestamp);
+                const dateStr = date.toLocaleDateString('en-US', { 
+                    month: 'short', 
+                    day: 'numeric',
+                    year: '2-digit'
+                });
+                
+                vintagePhoto.innerHTML = `
+                    <img src="${photo.data}" alt="Photo ${photo.id}" onclick="viewPhoto(${capturedPhotos.length - recentPhotos.length + index})">
+                    <div class="photo-date">${dateStr}</div>
+                `;
+                
+                albumGrid.appendChild(vintagePhoto);
+            });
+        }
+
+        // View photo
+        function viewPhoto(index) {
+            const photo = capturedPhotos[index];
+            window.open(photo.data, '_blank');
+        }
+
+        // Open album modal
+        function openAlbum() {
+            document.getElementById('albumModal').style.display = 'flex';
+        }
+
+        // Close album modal
+        function closeAlbum() {
+            document.getElementById('albumModal').style.display = 'none';
+        }
+
+        // Download all photos
+        function downloadAll() {
+            if (capturedPhotos.length === 0) return;
+            
+            capturedPhotos.forEach((photo, index) => {
+                setTimeout(() => {
+                    const link = document.createElement('a');
+                    link.href = photo.data;
+                    link.download = `VintageCam_${photo.id}_${Date.now()}.png`;
+                    link.click();
+                }, index * 500);
+            });
+            
+            closeAlbum();
+        }
+
+        // Clear album
+        function clearAlbum() {
+            if (confirm('Are you sure you want to clear the album?')) {
+                capturedPhotos = [];
+                updateAlbum();
+                closeAlbum();
+            }
+        }
+
+        // Reset all
+        function resetAll() {
+            currentFrame = 'none';
+            currentFilter = 'classic';
+            document.getElementById('frameOverlay').innerHTML = '';
+            document.getElementById('stickerLayer').innerHTML = '';
+            video.style.filter = 'sepia(20%) contrast(1.1) brightness(0.95)';
+            document.querySelectorAll('.frame-option').forEach(option => {
+                option.classList.remove('active');
+            });
+            document.querySelectorAll('.filter-chip').forEach(chip => {
+                chip.classList.remove('active');
+            });
+            document.querySelector('.frame-option').classList.add('active');
+            document.querySelector('.filter-chip').classList.add('active');
+        }
+
+        // Initialize on load
+        window.onload = function() {
+            initCamera();
+            setInterval(updateDateStamp, 1000);
+        };
+
+        // Cleanup on unload
+        window.onbeforeunload = function() {
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+            }
+        };
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (e.key === ' ' || e.key === 'Enter') {
+                e.preventDefault();
+                startCountdown();
+            } else if (e.key === 'c' || e.key === 'C') {
+                switchCamera();
+            } else if (e.key === 'a' || e.key === 'A') {
+                openAlbum();
+            } else if (e.key === 'r' || e.key === 'R') {
+                resetAll();
+            }
+        });
+    </script>
+</body>
+</html>
